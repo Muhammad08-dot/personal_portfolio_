@@ -154,9 +154,11 @@ export default function Skills() {
         </div>
       </section>
 
-      {/* ── Interactive React Flow Canvas ── */}
+      {/* ── Interactive React Flow Canvas (Desktop) & Grid (Mobile) ── */}
       <section style={{ flex: 1, padding: '0 24px 60px' }}>
-        <div style={{ maxWidth: '1400px', margin: '0 auto', height: '600px', border: '1px solid var(--border)', borderRadius: '12px', overflow: 'hidden', background: '#0a0a0a', position: 'relative' }}>
+        
+        {/* Desktop View: React Flow */}
+        <div className="hidden md:block" style={{ maxWidth: '1400px', margin: '0 auto', height: '600px', border: '1px solid var(--border)', borderRadius: '12px', overflow: 'hidden', background: '#0a0a0a', position: 'relative' }}>
           <ReactFlow
             nodes={nodes}
             edges={edges}
@@ -179,6 +181,56 @@ export default function Skills() {
               maskColor="rgba(0,0,0,0.7)"
             />
           </ReactFlow>
+        </div>
+
+        {/* Mobile View: Responsive Grid */}
+        <div className="block md:hidden" style={{ maxWidth: '100%', margin: '0 auto' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '40px' }}>
+            {categories.map((cat) => {
+              const skillsList = (skillsData as any)[cat.key] || [];
+              if (skillsList.length === 0) return null;
+              
+              return (
+                <motion.div key={cat.key} initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-50px" }} variants={stagger}>
+                  <motion.h2 
+                    variants={fadeUp} 
+                    style={{ 
+                      fontFamily: 'JetBrains Mono', 
+                      color: cat.color, 
+                      fontSize: '20px', 
+                      marginBottom: '20px', 
+                      borderBottom: `1px solid ${cat.color}40`, 
+                      paddingBottom: '8px',
+                      display: 'inline-block'
+                    }}
+                  >
+                    // {cat.label}
+                  </motion.h2>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', gap: '16px' }}>
+                    {skillsList.map((skill: any) => (
+                      <motion.div 
+                        key={skill.name} 
+                        variants={fadeUp} 
+                        className="glow-card" 
+                        style={{ 
+                          padding: '20px 16px', 
+                          border: `1px solid ${cat.color}40`, 
+                          borderRadius: '12px', 
+                          background: 'var(--bg-secondary)', 
+                          textAlign: 'center',
+                          boxShadow: `0 4px 20px ${cat.color}10`
+                        }}
+                      >
+                        <div style={{ fontSize: '28px', marginBottom: '12px' }}>{skill.icon}</div>
+                        <div style={{ fontFamily: 'JetBrains Mono', fontWeight: 600, fontSize: '13px', color: 'var(--text-primary)' }}>{skill.name}</div>
+                        <div style={{ marginTop: '8px', fontSize: '11px', color: 'var(--text-muted)' }}>{skill.level}% | {skill.years}y exp</div>
+                      </motion.div>
+                    ))}
+                  </div>
+                </motion.div>
+              );
+            })}
+          </div>
         </div>
       </section>
 
