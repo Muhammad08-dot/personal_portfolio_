@@ -33,7 +33,7 @@ export default function GoToTop() {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 20 }}
           transition={{ duration: 0.2 }}
-          style={{ position: 'fixed', bottom: '32px', right: '32px', zIndex: 50 }}
+          className="fixed bottom-4 right-4 md:bottom-8 md:right-8 z-50"
         >
           <button className="go-top-button" onClick={scrollToTop} aria-label="Back to Top">
             <svg viewBox="0 0 384 512" className="svgIcon">

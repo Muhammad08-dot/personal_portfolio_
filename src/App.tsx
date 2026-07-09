@@ -7,6 +7,7 @@ import LoadingScreen from './components/LoadingScreen';
 import CustomCursor from './components/CustomCursor';
 import CommandPalette from './components/CommandPalette';
 import GoToTop from './components/GoToTop';
+import AskMuhammadAgent from './components/AskMuhammadAgent';
 
 const Home = lazy(() => import('./pages/Home'));
 const About = lazy(() => import('./pages/About'));
@@ -38,11 +39,12 @@ const pageTransition = {
   duration: 0.35,
 };
 
+
 function AnimatedRoutes() {
   const location = useLocation();
 
   return (
-    <AnimatePresence mode="wait">
+    <AnimatePresence mode="wait" onExitComplete={() => window.scrollTo(0, 0)}>
       <motion.div
         key={location.pathname}
         initial="initial"
@@ -91,17 +93,20 @@ function AppContent() {
       <Navbar />
       {/* CMD K hint */}
       <div
-        style={{ position: 'fixed', bottom: '32px', left: '32px', zIndex: 50, display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 12px', borderRadius: '6px', border: '1px solid var(--border)', background: 'rgba(17,17,17,0.8)', backdropFilter: 'blur(8px)', cursor: 'pointer' }}
+        className="fixed bottom-4 left-4 md:bottom-8 md:left-8 z-50 flex items-center gap-[6px] px-3 py-1.5 rounded-md border border-[var(--border)] cursor-pointer"
+        style={{ background: 'rgba(17,17,17,0.8)', backdropFilter: 'blur(8px)' }}
         onClick={() => setCmdOpen(true)}
       >
         <kbd style={{ fontFamily: 'JetBrains Mono', fontSize: '11px', color: 'var(--text-muted)' }}>⌘K</kbd>
-        <span style={{ fontFamily: 'JetBrains Mono', fontSize: '11px', color: 'var(--text-muted)' }}>Command Palette</span>
+        <span className="hidden md:inline" style={{ fontFamily: 'JetBrains Mono', fontSize: '11px', color: 'var(--text-muted)' }}>Command Palette</span>
+        <span className="md:hidden" style={{ fontFamily: 'JetBrains Mono', fontSize: '11px', color: 'var(--text-muted)' }}>Cmd</span>
       </div>
       <main style={{ minHeight: '100vh' }}>
         <AnimatedRoutes />
       </main>
       <Footer />
       <GoToTop />
+      <AskMuhammadAgent />
     </>
   );
 }

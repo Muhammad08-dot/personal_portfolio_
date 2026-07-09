@@ -48,7 +48,7 @@ export default function Projects() {
       </section>
 
       {/* ── Filter & Search ── */}
-      <section style={{ padding: '32px 24px', borderBottom: '1px solid var(--border)', background: 'var(--bg-secondary)', position: 'sticky', top: '72px', zIndex: 40, backdropFilter: 'blur(10px)' }}>
+      <section style={{ padding: '32px 24px', borderBottom: '1px solid var(--border)', background: 'rgba(10,10,10,0.95)', position: 'sticky', top: '60px', zIndex: 40, backdropFilter: 'blur(10px)' }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
           {/* Terminal search */}
           <div style={{ marginBottom: '20px', padding: '10px 16px', borderRadius: '8px', border: '1px solid var(--border)', background: 'var(--bg-primary)', display: 'flex', alignItems: 'center', gap: '12px', maxWidth: '500px' }}>

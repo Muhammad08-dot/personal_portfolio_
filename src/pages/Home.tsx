@@ -295,7 +295,7 @@ export default function Home() {
                     {project.category === 'Full-Stack' ? '🖥️' : project.category === 'AI/ML' ? '🧠' : '⌨️'}
                   </div>
 
-                  <h3 style={{ fontFamily: 'JetBrains Mono', fontWeight: 700, fontSize: '18px', color: 'var(--text-primary)', marginBottom: '8px' }}>{project.title}</h3>
+                  <h3 style={{ fontFamily: 'JetBrains Mono', fontWeight: 700, fontSize: '18px', color: 'var(--text-primary)', marginBottom: '8px', lineHeight: 1.3 }}>{project.title}</h3>
                   <p style={{ fontSize: '14px', color: 'var(--text-secondary)', lineHeight: 1.6, flex: 1, marginBottom: '16px' }}>{project.description}</p>
 
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '16px' }}>
@@ -309,8 +309,8 @@ export default function Home() {
                       <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}><GitFork size={12} /> {project.forks}</span>
                     </div>
                     <div style={{ display: 'flex', gap: '8px' }}>
-                      {project.github && (
-                        <a href={project.github} target="_blank" rel="noopener noreferrer"
+                      {project.githubUrl && (
+                        <a href={project.githubUrl} target="_blank" rel="noopener noreferrer"
                           style={{ fontFamily: 'JetBrains Mono', fontSize: '12px', padding: '6px 12px', borderRadius: '6px', border: '1px solid var(--border)', color: 'var(--text-secondary)', textDecoration: 'none', transition: 'all 0.2s' }}
                           onMouseEnter={e => { const el = e.currentTarget as HTMLElement; el.style.borderColor = 'var(--accent-primary)'; el.style.color = 'var(--accent-primary)'; }}
                           onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.borderColor = 'var(--border)'; el.style.color = 'var(--text-secondary)'; }}
@@ -361,7 +361,7 @@ export default function Home() {
             </motion.div>
 
             <motion.div variants={fadeUp} style={{ borderRadius: '12px', border: '1px solid var(--border)', padding: '24px', background: 'var(--bg-primary)' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px', flexWrap: 'wrap' }}>
                 <p style={{ fontFamily: 'JetBrains Mono', fontSize: '14px', color: 'var(--text-secondary)', margin: 0 }}>Contribution Activity</p>
                 <span style={{ fontSize: '16px' }}>😉</span>
               </div>
@@ -415,23 +415,24 @@ export default function Home() {
 
             <motion.div variants={stagger} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
               {blogPosts.slice(0, 3).map(post => (
-                <motion.div
-                  key={post.id}
-                  variants={fadeUp}
-                  className="glow-card"
-                  style={{ padding: '24px', display: 'flex', alignItems: 'center', gap: '24px', cursor: 'pointer' }}
-                >
-                  <div style={{ fontFamily: 'JetBrains Mono', fontSize: '13px', color: 'var(--text-muted)', minWidth: '90px', display: 'none' }}>{post.date.slice(0, 7)}</div>
-                  <div style={{ flex: 1 }}>
-                    <h3 style={{ fontFamily: 'JetBrains Mono', fontWeight: 600, fontSize: '15px', color: 'var(--text-primary)', marginBottom: '6px' }}>{post.title}</h3>
-                    <p style={{ fontSize: '14px', color: 'var(--text-secondary)', lineHeight: 1.5 }}>{post.excerpt}</p>
-                  </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexShrink: 0 }}>
-                    <span className="tech-tag">{post.category}</span>
-                    <span style={{ fontFamily: 'JetBrains Mono', fontSize: '12px', color: 'var(--text-muted)' }}>{post.readingTime}</span>
-                    <ArrowRight size={16} style={{ color: 'var(--accent-primary)' }} />
-                  </div>
-                </motion.div>
+                <Link key={post.id} to={`/blog/${post.slug}`} style={{ textDecoration: 'none' }}>
+                  <motion.div
+                    variants={fadeUp}
+                    className="glow-card"
+                    style={{ padding: '24px', display: 'flex', alignItems: 'center', gap: '24px', cursor: 'pointer' }}
+                  >
+                    <div style={{ fontFamily: 'JetBrains Mono', fontSize: '13px', color: 'var(--text-muted)', minWidth: '90px', display: 'none' }}>{post.date.slice(0, 7)}</div>
+                    <div style={{ flex: 1 }}>
+                      <h3 style={{ fontFamily: 'JetBrains Mono', fontWeight: 600, fontSize: '15px', color: 'var(--text-primary)', marginBottom: '6px' }}>{post.title}</h3>
+                      <p style={{ fontSize: '14px', color: 'var(--text-secondary)', lineHeight: 1.5 }}>{post.excerpt}</p>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexShrink: 0 }}>
+                      <span className="tech-tag">{post.category}</span>
+                      <span style={{ fontFamily: 'JetBrains Mono', fontSize: '12px', color: 'var(--text-muted)' }}>{post.readingTime}</span>
+                      <ArrowRight size={16} style={{ color: 'var(--accent-primary)' }} />
+                    </div>
+                  </motion.div>
+                </Link>
               ))}
             </motion.div>
 

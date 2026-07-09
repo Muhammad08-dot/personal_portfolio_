@@ -19,8 +19,7 @@ const interests = [
   { icon: '🎮', label: 'Game Dev', desc: 'Indie games on weekends' },
   { icon: '🎵', label: 'Music', desc: 'Guitar & lo-fi production' },
   { icon: '📚', label: 'Reading', desc: 'Sci-fi & tech books' },
-  { icon: '🏃', label: 'Running', desc: 'Marathon training' },
-  { icon: '✈️', label: 'Travel', desc: 'Exploring new cities' },
+  { icon: '🍿', label: 'Series & Movies', desc: 'Loves watching series & movies' },
 ];
 
 export default function About() {
@@ -136,55 +135,25 @@ export default function About() {
             </motion.div>
 
             <div style={{ position: 'relative' }}>
-              {/* Center line */}
-              <div style={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)', top: 0, bottom: 0, width: '2px', borderLeft: '2px dashed var(--accent-primary)', background: 'transparent' }} />
+              {/* Center line (Desktop) */}
+              <div className="hidden md:block" style={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)', top: 0, bottom: 0, width: '2px', borderLeft: '2px dashed var(--accent-primary)', background: 'transparent' }} />
+              {/* Left line (Mobile) */}
+              <div className="block md:hidden absolute left-5 top-0 bottom-0 w-[2px] border-l-2 border-dashed border-[var(--accent-primary)] bg-transparent transform -translate-x-1/2" />
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: '40px' }}>
                 {timeline.map((item, i) => (
                   <motion.div
                     key={i}
                     variants={fadeUp}
-                    style={{
-                      display: 'flex',
-                      justifyContent: i % 2 === 0 ? 'flex-start' : 'flex-end',
-                      position: 'relative',
-                      paddingLeft: i % 2 === 0 ? 0 : '50%',
-                      paddingRight: i % 2 === 0 ? '50%' : 0,
-                    }}
+                    className={`flex relative w-full ${i % 2 === 0 ? 'md:pr-[50%] md:justify-start' : 'md:pl-[50%] md:justify-end'} pl-16 md:pl-0`}
                   >
                     {/* Center dot */}
-                    <div style={{
-                      position: 'absolute',
-                      left: '50%',
-                      top: '24px',
-                      transform: 'translateX(-50%)',
-                      width: '40px',
-                      height: '40px',
-                      borderRadius: '50%',
-                      background: 'var(--bg-primary)',
-                      border: '2px solid var(--accent-primary)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      fontFamily: 'JetBrains Mono',
-                      fontWeight: 'bold',
-                      fontSize: '18px',
-                      color: 'var(--accent-primary)',
-                      zIndex: 2,
-                      boxShadow: '0 0 15px var(--glow)',
-                    }}>
+                    <div className="absolute left-5 md:left-1/2 transform -translate-x-1/2 top-6 w-10 h-10 rounded-full bg-[var(--bg-primary)] border-2 border-[var(--accent-primary)] flex items-center justify-center font-mono font-bold text-lg text-[var(--accent-primary)] z-10 shadow-[0_0_15px_var(--glow)]">
                       {item.icon}
                     </div>
 
                     <div
-                      style={{
-                        maxWidth: '380px',
-                        padding: '20px',
-                        borderRadius: '10px',
-                        border: '1px solid var(--border)',
-                        background: 'var(--bg-primary)',
-                        margin: i % 2 === 0 ? '0 60px 0 0' : '0 0 0 60px',
-                      }}
+                      className={`max-w-[380px] w-full p-5 rounded-[10px] border border-[var(--border)] bg-[var(--bg-primary)] ${i % 2 === 0 ? 'md:mr-14' : 'md:ml-14'}`}
                     >
                       <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
                         <span style={{ fontFamily: 'JetBrains Mono', fontSize: '12px', color: 'var(--accent-primary)', background: 'rgba(0,255,65,0.1)', padding: '2px 8px', borderRadius: '4px', border: '1px solid rgba(0,255,65,0.2)' }}>{item.year}</span>

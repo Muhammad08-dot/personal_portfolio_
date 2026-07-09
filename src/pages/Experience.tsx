@@ -134,32 +134,55 @@ export default function Experience() {
 
             <motion.div
               variants={fadeUp}
-              style={{ display: 'grid', gridTemplateColumns: '220px 1fr', gap: '0', border: '1px solid var(--border)', borderRadius: '10px', overflow: 'hidden', minHeight: '400px' }}
+              className="grid grid-cols-[60px_1fr] md:grid-cols-[220px_1fr] border border-[var(--border)] rounded-[10px] overflow-hidden min-h-[400px]"
             >
               {/* Tab sidebar */}
-              <div style={{ background: 'var(--bg-secondary)', borderRight: '1px solid var(--border)' }}>
+              <div className="bg-[var(--bg-secondary)] border-r border-[var(--border)] flex flex-col">
                 {experienceData.map((job, i) => (
                   <button
                     key={i}
                     onClick={() => setActiveJob(i)}
-                    style={{
-                      display: 'block',
-                      width: '100%',
-                      padding: '20px',
-                      textAlign: 'left',
-                      background: 'none',
-                      border: 'none',
-                      borderLeft: `3px solid ${activeJob === i ? job.color : 'transparent'}`,
-                      cursor: 'pointer',
-                      transition: 'all 0.2s',
-                      borderBottom: '1px solid var(--border)',
-                    }}
+                    className={`relative flex-1 md:w-full flex md:block items-center justify-center md:items-start md:justify-start p-0 md:p-5 text-left transition-all duration-200 cursor-pointer border-b last:border-b-0 md:border-b border-[var(--border)] ${activeJob === i ? 'bg-[rgba(255,255,255,0.03)]' : 'hover:bg-[rgba(255,255,255,0.01)]'}`}
                   >
-                    <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: `${job.color}20`, border: `1px solid ${job.color}40`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'JetBrains Mono', fontSize: '12px', fontWeight: 700, color: job.color, marginBottom: '8px' }}>
-                      {job.logo}
+                    {/* Active indicator */}
+                    {activeJob === i && (
+                      <div className="absolute top-0 bottom-0 left-0 w-[3px]" style={{ background: job.color }} />
+                    )}
+                    
+                    {/* Mobile View (Straight Vertical) */}
+                    <div className="md:hidden flex flex-col items-center gap-3 py-4 h-full justify-center">
+                      <div className="flex items-center justify-center font-mono font-bold text-[14px] flex-shrink-0" style={{ width: '32px', height: '32px', borderRadius: '8px', background: `${job.color}20`, border: `1px solid ${job.color}40`, color: job.color }}>
+                        {job.logo}
+                      </div>
+                      <div className="flex flex-col items-center justify-center" style={{ gap: '2px' }}>
+                        {job.tabCompany.split('').map((char, charIdx) => (
+                          <span 
+                            key={charIdx}
+                            style={{ 
+                              fontFamily: 'JetBrains Mono', 
+                              fontSize: '11px', 
+                              fontWeight: 700, 
+                              lineHeight: '1',
+                              color: activeJob === i ? job.color : 'var(--text-secondary)',
+                              textTransform: 'uppercase'
+                            }}
+                          >
+                            {char === ' ' ? '\u00A0' : char}
+                          </span>
+                        ))}
+                      </div>
                     </div>
-                    <div style={{ fontFamily: 'JetBrains Mono', fontSize: '13px', fontWeight: 600, color: activeJob === i ? job.color : 'var(--text-secondary)' }}>{job.tabCompany}</div>
-                    <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '2px' }}>{job.tabYear}</div>
+
+                    {/* Desktop View */}
+                    <div className="hidden md:block">
+                      <div className="flex items-center justify-center font-mono font-bold text-[12px] flex-shrink-0 mb-2" style={{ width: '36px', height: '36px', borderRadius: '8px', background: `${job.color}20`, border: `1px solid ${job.color}40`, color: job.color }}>
+                        {job.logo}
+                      </div>
+                      <div>
+                        <div style={{ fontFamily: 'JetBrains Mono', fontSize: '13px', fontWeight: 600, color: activeJob === i ? job.color : 'var(--text-secondary)' }}>{job.tabCompany}</div>
+                        <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '2px' }}>{job.tabYear}</div>
+                      </div>
+                    </div>
                   </button>
                 ))}
               </div>
@@ -170,7 +193,7 @@ export default function Experience() {
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.3 }}
-                style={{ padding: '32px', background: 'var(--bg-primary)' }}
+                className="p-4 sm:p-5 md:p-8 bg-[var(--bg-primary)] overflow-y-auto"
               >
                 <div style={{ display: 'flex', alignItems: 'flex-start', gap: '16px', marginBottom: '24px' }}>
                   <div>

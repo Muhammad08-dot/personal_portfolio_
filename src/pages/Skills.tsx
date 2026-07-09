@@ -1,193 +1,184 @@
-import { useState, Suspense, lazy } from 'react';
+import { Suspense, lazy } from 'react';
 import { motion } from 'framer-motion';
 import { fadeUp, stagger } from '../utils/animations';
+import { siteConfig, skills as skillsData } from '../config/siteConfig';
+import {
+  ReactFlow,
+  MiniMap,
+  Controls,
+  Background,
+  useNodesState,
+  useEdgesState,
+  Handle,
+  Position,
+  BackgroundVariant,
+  NodeProps,
+  Edge
+} from '@xyflow/react';
+import '@xyflow/react/dist/style.css';
 
 const FloatingGeometry = lazy(() => import('../components/3d/FloatingGeometry'));
 
-type Category = 'frontend' | 'backend' | 'database' | 'devops' | 'tools' | 'learning';
-
-const categories: { key: Category; label: string; icon: string; color: string }[] = [
-  { key: 'frontend', label: 'Frontend', icon: '🎨', color: '#00ff41' },
-  { key: 'backend', label: 'Backend', icon: '⚙️', color: '#00d4ff' },
-  { key: 'database', label: 'Database', icon: '🗄️', color: '#bd93f9' },
-  { key: 'devops', label: 'DevOps & Cloud', icon: '☁️', color: '#ffb86c' },
-  { key: 'tools', label: 'Tools', icon: '🔧', color: '#ff5555' },
-  { key: 'learning', label: 'Learning', icon: '📖', color: '#50fa7b' },
-];
-
-const customSkills: Record<Category, { name: string; level: number; levelText: string; expText: string; icon: string }[]> = {
-  frontend: [
-    { name: "React", level: 90, levelText: "Expert", expText: "1+ y exp", icon: "⚛️" },
-    { name: "JavaScript", level: 90, levelText: "Expert", expText: "1+ y exp", icon: "🌐" },
-    { name: "TypeScript", level: 85, levelText: "Advanced", expText: "1+ y exp", icon: "🌐" },
-    { name: "HTML/CSS", level: 95, levelText: "Expert", expText: "2y exp", icon: "🎨" },
-  ],
-  backend: [
-    { name: "Node.js", level: 85, levelText: "Advanced", expText: "1+ y exp", icon: "🟢" },
-    { name: "Express", level: 85, levelText: "Advanced", expText: "1+ y exp", icon: "⚡" },
-    { name: "FastAPI", level: 80, levelText: "Advanced", expText: "1+ y exp", icon: "🚀" },
-    { name: "LangChain & CrewAI", level: 85, levelText: "Advanced", expText: "1-2y exp", icon: "🤖" },
-  ],
-  database: [
-    { name: "Firebase", level: 85, levelText: "Advanced", expText: "1y exp", icon: "🔥" },
-    { name: "MySQL", level: 80, levelText: "Advanced", expText: "1y exp", icon: "🐬" },
-    { name: "PostgreSQL", level: 80, levelText: "Advanced", expText: "2y exp", icon: "🐘" },
-    { name: "MongoDB", level: 85, levelText: "Advanced", expText: "2y exp", icon: "🍃" },
-  ],
-  tools: [
-    { name: "Cursor & Claude Code", level: 95, levelText: "Power User", expText: "1y exp", icon: "🚀" },
-    { name: "Antigravity & Gemini CLI", level: 95, levelText: "Power User", expText: "1y exp", icon: "🧠" },
-    { name: "n8n Automation", level: 85, levelText: "Advanced", expText: "1-2y exp", icon: "🤖" },
-    { name: "Git / GitHub", level: 90, levelText: "Expert", expText: "3y exp", icon: "📦" },
-  ],
-  learning: [
-    { name: "Vibe Coding", level: 100, levelText: "Expert", expText: "2y exp", icon: "✨" },
-    { name: "OpenCV (CV)", level: 75, levelText: "Intermediate", expText: "1y exp", icon: "👁️" },
-  ],
-  devops: [
-    { name: "Git / GitHub", level: 90, levelText: "Expert", expText: "3y exp", icon: "📦" },
-    { name: "Netlify & Vercel", level: 85, levelText: "Advanced", expText: "1-2y exp", icon: "☁️" },
-    { name: "Firebase Cloud", level: 85, levelText: "Advanced", expText: "1y exp", icon: "🔥" },
-    { name: "Docker Containers", level: 75, levelText: "Intermediate", expText: "1y exp", icon: "🐳" },
-  ]
-};
-
-function SkillBar({ level, color }: { level: number; color: string }) {
+// --- Custom Node Component ---
+const CustomNode = ({ data, isConnectable }: NodeProps) => {
   return (
-    <div style={{ height: '4px', background: 'var(--border)', borderRadius: '2px', overflow: 'hidden' }}>
-      <motion.div
-        initial={{ width: 0 }}
-        whileInView={{ width: `${level}%` }}
-        viewport={{ once: true }}
-        transition={{ duration: 1.2, ease: 'easeOut', delay: 0.2 }}
-        style={{ height: '100%', background: `linear-gradient(90deg, ${color}, ${color}aa)`, borderRadius: '2px', boxShadow: `0 0 8px ${color}60` }}
-      />
+    <div
+      className="glow-card"
+      style={{
+        padding: '12px 20px',
+        border: `1px solid ${(data.color as string) || 'var(--border)'}`,
+        borderRadius: '8px',
+        background: 'var(--bg-secondary)',
+        minWidth: '150px',
+        textAlign: 'center',
+        cursor: 'pointer',
+        boxShadow: data.color ? `0 0 15px ${(data.color as string)}40` : 'none',
+      }}
+    >
+      <Handle type="target" position={Position.Top} isConnectable={isConnectable} style={{ background: (data.color as string) || '#555' }} />
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+        {Boolean(data.icon) && <span style={{ fontSize: '18px' }}>{data.icon as React.ReactNode}</span>}
+        <span style={{ fontFamily: 'JetBrains Mono', fontWeight: 600, fontSize: '14px', color: 'var(--text-primary)' }}>
+          {data.label as React.ReactNode}
+        </span>
+      </div>
+      {Boolean(data.level) && (
+        <div style={{ marginTop: '8px', fontSize: '11px', color: 'var(--text-muted)' }}>
+          {data.level as React.ReactNode}% | {data.years as React.ReactNode}y exp
+        </div>
+      )}
+      <Handle type="source" position={Position.Bottom} isConnectable={isConnectable} style={{ background: (data.color as string) || '#555' }} />
     </div>
   );
-}
+};
+
+const nodeTypes = {
+  custom: CustomNode,
+};
+
+// --- Generate Nodes & Edges from Config ---
+const initialNodes: any[] = [
+  {
+    id: 'root',
+    type: 'custom',
+    data: { label: 'Muhammad Abdullah', icon: '👨‍💻', color: '#00d4ff' },
+    position: { x: 400, y: 50 },
+  },
+];
+
+const initialEdges: Edge[] = [];
+
+const categories = [
+  { key: 'coreAI', label: 'AI & ML', color: '#ff5555', xOffset: -400 },
+  { key: 'frontend', label: 'Frontend', color: '#00ff41', xOffset: -150 },
+  { key: 'backend', label: 'Backend', color: '#bd93f9', xOffset: 150 },
+  { key: 'database', label: 'Database', color: '#f1fa8c', xOffset: 400 },
+  { key: 'toolsCloud', label: 'Tools & Cloud', color: '#ffb86c', xOffset: 650 },
+];
+
+
+
+categories.forEach((cat) => {
+  // Category Node
+  const catId = `cat-${cat.key}`;
+  initialNodes.push({
+    id: catId,
+    type: 'custom',
+    data: { label: cat.label, color: cat.color },
+    position: { x: 400 + cat.xOffset, y: 200 },
+  });
+
+  initialEdges.push({
+    id: `edge-root-${catId}`,
+    source: 'root',
+    target: catId,
+    animated: true,
+    style: { stroke: cat.color },
+  });
+
+  // Skill Nodes
+  const skillsList = (skillsData as any)[cat.key] || [];
+  skillsList.forEach((skill: any, index: number) => {
+    const skillId = `skill-${cat.key}-${index}`;
+    
+    // Spread them out underneath the category node
+    const spacing = 200;
+    const startX = (400 + cat.xOffset) - ((skillsList.length - 1) * spacing) / 2;
+
+    initialNodes.push({
+      id: skillId,
+      type: 'custom',
+      data: { 
+        label: skill.name, 
+        icon: skill.icon, 
+        level: skill.level, 
+        years: skill.years,
+        color: cat.color 
+      },
+      position: { x: startX + (index * spacing), y: 400 + (index % 2 === 0 ? 0 : 80) }, // Staggered Y to avoid overlap
+    });
+
+    initialEdges.push({
+      id: `edge-${catId}-${skillId}`,
+      source: catId,
+      target: skillId,
+      animated: true,
+      style: { stroke: cat.color, opacity: 0.5 },
+    });
+  });
+});
 
 export default function Skills() {
-  const [activeCategory, setActiveCategory] = useState<Category>('frontend');
-
-  const currentSkills = customSkills[activeCategory] || [];
-  const activeColor = categories.find(c => c.key === activeCategory)?.color || '#00ff41';
+  const [nodes, , onNodesChange] = useNodesState(initialNodes);
+  const [edges, , onEdgesChange] = useEdgesState(initialEdges);
 
   return (
-    <div style={{ background: 'var(--bg-primary)', paddingTop: '80px' }}>
+    <div style={{ background: 'var(--bg-primary)', paddingTop: '80px', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       {/* ── Header ── */}
-      <section style={{ padding: '60px 24px', position: 'relative', overflow: 'hidden', minHeight: '360px' }}>
-        <div style={{ position: 'absolute', right: '5%', top: '-20px', width: '40%', height: '400px', opacity: 0.7, pointerEvents: 'none' }}>
+      <section style={{ padding: '60px 24px 20px', position: 'relative', overflow: 'hidden' }}>
+        <div style={{ position: 'absolute', right: '5%', top: '-20px', width: '40%', height: '400px', opacity: 0.4, pointerEvents: 'none' }}>
           <Suspense fallback={null}>
             <FloatingGeometry shape="torusKnot" color="#bd93f9" height="400px" />
           </Suspense>
         </div>
         <div style={{ maxWidth: '1200px', margin: '0 auto', position: 'relative', zIndex: 10 }}>
           <motion.div initial="hidden" animate="visible" variants={stagger}>
-            <motion.p variants={fadeUp} className="section-header">// skills</motion.p>
+            <motion.p variants={fadeUp} className="section-header">// skills --interactive</motion.p>
             <motion.h1 variants={fadeUp} className="section-title" style={{ fontSize: 'clamp(36px, 5vw, 56px)', marginBottom: '16px' }}>
-              Skills & <span style={{ color: 'var(--accent-primary)' }}>Technologies</span>
+              Skill <span style={{ color: 'var(--accent-primary)' }}>Tree</span>
             </motion.h1>
             <motion.p variants={fadeUp} style={{ color: 'var(--text-secondary)', fontSize: '18px', lineHeight: 1.7, maxWidth: '600px' }}>
-              Tools, languages, and frameworks I use to bring ideas to life.
+              Drag, zoom, and explore my technical ecosystem. From Agentic AI to Full-Stack Web Development.
             </motion.p>
           </motion.div>
         </div>
       </section>
 
-      {/* ── Category Tabs ── */}
-      <section style={{ padding: '0 24px 60px' }}>
-        <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
-          {/* Tab buttons */}
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={stagger}
+      {/* ── Interactive React Flow Canvas ── */}
+      <section style={{ flex: 1, padding: '0 24px 60px' }}>
+        <div style={{ maxWidth: '1400px', margin: '0 auto', height: '600px', border: '1px solid var(--border)', borderRadius: '12px', overflow: 'hidden', background: '#0a0a0a', position: 'relative' }}>
+          <ReactFlow
+            nodes={nodes}
+            edges={edges}
+            onNodesChange={onNodesChange}
+            onEdgesChange={onEdgesChange}
+            nodeTypes={nodeTypes}
+            fitView
+            fitViewOptions={{ padding: 0.2 }}
+            minZoom={0.2}
+            maxZoom={1.5}
           >
-            <motion.div
-              variants={fadeUp}
-              style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', marginBottom: '48px' }}
-            >
-              {categories.map(cat => (
-                <button
-                  key={cat.key}
-                  onClick={() => setActiveCategory(cat.key)}
-                  style={{
-                    display: 'inline-flex', alignItems: 'center', gap: '8px',
-                    padding: '10px 20px', borderRadius: '8px', cursor: 'pointer',
-                    fontFamily: 'JetBrains Mono', fontSize: '13px', fontWeight: 600,
-                    border: `1px solid ${activeCategory === cat.key ? cat.color : 'var(--border)'}`,
-                    background: activeCategory === cat.key ? `${cat.color}18` : 'var(--bg-secondary)',
-                    color: activeCategory === cat.key ? cat.color : 'var(--text-secondary)',
-                    boxShadow: activeCategory === cat.key ? `0 0 15px ${cat.color}40` : 'none',
-                    transition: 'all 0.2s ease',
-                  }}
-                >
-                  <span>{cat.icon}</span> {cat.label}
-                </button>
-              ))}
-            </motion.div>
-
-            {/* Skills Grid */}
-            <motion.div
-              key={activeCategory}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4 }}
-              style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '20px' }}
-            >
-              {currentSkills.length > 0 ? (
-                currentSkills.map((skill) => (
-                  <div
-                    key={skill.name}
-                    style={{
-                      padding: '24px',
-                      borderRadius: '10px',
-                      border: '1px solid var(--border)',
-                      background: 'var(--bg-secondary)',
-                      transition: 'all 0.3s ease',
-                      cursor: 'default',
-                    }}
-                    onMouseEnter={e => {
-                      const el = e.currentTarget as HTMLElement;
-                      el.style.borderColor = activeColor;
-                      el.style.boxShadow = `0 0 20px ${activeColor}30`;
-                      el.style.transform = 'translateY(-4px)';
-                    }}
-                    onMouseLeave={e => {
-                      const el = e.currentTarget as HTMLElement;
-                      el.style.borderColor = 'var(--border)';
-                      el.style.boxShadow = 'none';
-                      el.style.transform = 'none';
-                    }}
-                  >
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                        <span style={{ fontSize: '24px' }}>{skill.icon}</span>
-                        <h3 style={{ fontFamily: 'JetBrains Mono', fontWeight: 600, fontSize: '15px', color: 'var(--text-primary)' }}>{skill.name}</h3>
-                      </div>
-                      <span style={{ fontFamily: 'JetBrains Mono', fontSize: '13px', color: activeColor, fontWeight: 700 }}>{skill.level}%</span>
-                    </div>
-
-                    <SkillBar level={skill.level} color={activeColor} />
-
-                    <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '12px' }}>
-                      <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
-                        {skill.levelText}
-                      </span>
-                      <span style={{ fontFamily: 'JetBrains Mono', fontSize: '12px', color: 'var(--text-muted)' }}>
-                        {skill.expText}
-                      </span>
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <div style={{ gridColumn: '1 / -1', padding: '40px', textAlign: 'center', color: 'var(--text-muted)', fontFamily: 'JetBrains Mono', border: '1px dashed var(--border)', borderRadius: '10px' }}>
-                  No active environments configured for this category.
-                </div>
-              )}
-            </motion.div>
-          </motion.div>
+            <Background color="#333" variant={BackgroundVariant.Dots} gap={24} size={1.5} />
+            <Controls style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border)', fill: 'var(--accent-primary)' }} />
+            <MiniMap 
+              nodeColor={(n) => {
+                if (n.data?.color) return n.data.color as string;
+                return '#444';
+              }}
+              style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border)' }}
+              maskColor="rgba(0,0,0,0.7)"
+            />
+          </ReactFlow>
         </div>
       </section>
 

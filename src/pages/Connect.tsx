@@ -230,8 +230,7 @@ function CopyButton({ text }: { text: string }) {
 export default function Connect() {
   return (
     <div style={{ background: 'var(--bg-primary)', paddingTop: '80px' }}>
-      {/* Header */}
-      <section style={{ padding: '60px 24px', position: 'relative', overflow: 'hidden', minHeight: '380px' }}>
+      <section style={{ padding: '100px 24px 60px', position: 'relative', overflow: 'hidden', minHeight: '380px' }}>
         <div style={{ position: 'absolute', right: '5%', top: '-20px', width: '45%', height: '420px', opacity: 0.7, pointerEvents: 'none' }}>
           <Suspense fallback={null}>
             <FloatingGeometry shape="torus" color="#00d4ff" height="420px" />
@@ -313,15 +312,6 @@ export default function Connect() {
                   </div>
                 </div>
 
-                {/* Schedule */}
-                <div style={{ padding: '20px', borderRadius: '10px', border: '1px solid var(--border)', background: 'var(--bg-primary)' }}>
-                  <div style={{ fontFamily: 'JetBrains Mono', fontSize: '12px', color: 'var(--text-muted)', marginBottom: '8px' }}>$ open cal.com/{siteConfig.name.split(' ')[0].toLowerCase()}</div>
-                  <h3 style={{ fontFamily: 'JetBrains Mono', fontWeight: 600, fontSize: '14px', color: 'var(--text-primary)', marginBottom: '6px' }}>Schedule a Call</h3>
-                  <p style={{ fontSize: '13px', color: 'var(--text-secondary)', marginBottom: '12px' }}>Book a 30-min intro call directly on my calendar.</p>
-                  <button style={{ padding: '8px 20px', borderRadius: '6px', background: 'rgba(0,212,255,0.1)', border: '1px solid rgba(0,212,255,0.3)', color: 'var(--accent-secondary)', fontFamily: 'JetBrains Mono', fontSize: '13px', cursor: 'pointer' }}>
-                    Book a Call →
-                  </button>
-                </div>
 
                 {/* Response time */}
                 <div style={{ padding: '20px', borderRadius: '10px', border: '1px solid var(--border)', background: 'var(--bg-primary)' }}>

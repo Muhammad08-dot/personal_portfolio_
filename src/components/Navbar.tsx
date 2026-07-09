@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Terminal } from 'lucide-react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Menu, X, Terminal, ArrowLeft } from 'lucide-react';
 import { navLinks, siteConfig } from '../config/siteConfig';
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -18,10 +19,30 @@ export default function Navbar() {
     setMenuOpen(false);
   }, [location.pathname]);
 
+  const handleBack = () => {
+    const pathSegments = location.pathname.split('/').filter(Boolean);
+    if (pathSegments.length > 1) {
+      // Sub-page (e.g., viewing an article or a project)
+      if (window.history.length > 2) {
+        navigate(-1);
+      } else {
+        // Fallback to category root, unless it's "article" which has no root page
+        if (pathSegments[0] === 'article') {
+          navigate('/');
+        } else {
+          navigate(`/${pathSegments[0]}`); 
+        }
+      }
+    } else {
+      // Top-level page
+      navigate('/');
+    }
+  };
+
   return (
     <>
       <nav
-        className="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
+        className="fixed top-0 left-0 right-0 z-[10000] transition-all duration-300"
         style={{
           background: scrolled ? 'rgba(10,10,10,0.85)' : 'transparent',
           backdropFilter: scrolled ? 'blur(12px)' : 'none',
@@ -29,22 +50,35 @@ export default function Navbar() {
         }}
       >
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-          {/* Logo */}
-          <Link
-            to="/"
-            className="flex items-center gap-2 group"
-            style={{ textDecoration: 'none' }}
-          >
-            <Terminal size={18} style={{ color: 'var(--accent-primary)' }} />
-            <span
-              className="font-mono font-bold text-base"
-              style={{ color: 'var(--text-primary)', fontFamily: 'JetBrains Mono' }}
+          <div className="flex items-center gap-4">
+            {/* Back Button */}
+            {location.pathname !== '/' && (
+              <button
+                onClick={handleBack}
+                className="flex items-center justify-center w-8 h-8 rounded-full border border-[var(--border)] text-[var(--text-secondary)] hover:text-[var(--accent-primary)] hover:border-[var(--accent-primary)] transition-colors bg-[var(--bg-primary)]"
+                title="Go Back"
+              >
+                <ArrowLeft size={16} />
+              </button>
+            )}
+            
+            {/* Logo */}
+            <Link
+              to="/"
+              className="flex items-center gap-2 group"
+              style={{ textDecoration: 'none' }}
             >
-              <span style={{ color: 'var(--accent-primary)' }}>{siteConfig.name.split(' ')[0].toLowerCase()}</span>
-              <span style={{ color: 'var(--text-secondary)' }}>@dev</span>
-              <span className="blink" style={{ color: 'var(--accent-primary)' }}>_</span>
-            </span>
-          </Link>
+              <Terminal size={18} style={{ color: 'var(--accent-primary)' }} />
+              <span
+                className="font-mono font-bold text-base hidden sm:inline"
+                style={{ color: 'var(--text-primary)', fontFamily: 'JetBrains Mono' }}
+              >
+                <span style={{ color: 'var(--accent-primary)' }}>{siteConfig.name.split(' ')[0].toLowerCase()}</span>
+                <span style={{ color: 'var(--text-secondary)' }}>@dev</span>
+                <span className="blink" style={{ color: 'var(--accent-primary)' }}>_</span>
+              </span>
+            </Link>
+          </div>
 
           {/* Desktop Nav */}
           <div className="hidden md:flex items-center gap-6">
@@ -94,7 +128,7 @@ export default function Navbar() {
 
       {/* Mobile menu */}
       <div
-        className="fixed inset-0 z-40 md:hidden flex flex-col items-center justify-center transition-all duration-300"
+        className="fixed inset-0 z-[9999] md:hidden flex flex-col items-center justify-center transition-all duration-300"
         style={{
           background: 'rgba(10,10,10,0.98)',
           backdropFilter: 'blur(20px)',
@@ -108,6 +142,7 @@ export default function Navbar() {
             <Link
               key={link.path}
               to={link.path}
+              onClick={() => setMenuOpen(false)}
               className="font-mono text-2xl font-bold"
               style={{
                 fontFamily: 'JetBrains Mono',
@@ -125,6 +160,7 @@ export default function Navbar() {
           ))}
           <Link
             to="/resume"
+            onClick={() => setMenuOpen(false)}
             className="font-mono text-xl px-8 py-3 border-2 rounded-lg mt-4"
             style={{
               fontFamily: 'JetBrains Mono',

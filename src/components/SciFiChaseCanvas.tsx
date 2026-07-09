@@ -478,25 +478,60 @@ export default function SciFiChaseCanvas() {
         />
 
         {isExpanded && (
-          <button 
-            onClick={(e) => { e.stopPropagation(); setIsExpanded(false); }}
-            style={{
-              position: 'absolute',
-              top: '24px',
-              left: '24px',
-              padding: '8px 16px',
-              background: 'rgba(0, 255, 0, 0.1)',
-              border: '1px solid #00FF00',
-              color: '#00FF00',
-              fontFamily: 'JetBrains Mono',
-              fontSize: '14px',
-              cursor: 'pointer',
-              zIndex: 10000,
-              backdropFilter: 'blur(4px)'
-            }}
-          >
-            ← Go Back
-          </button>
+          <>
+            <button 
+              onClick={(e) => { e.stopPropagation(); setIsExpanded(false); }}
+              style={{
+                position: 'absolute',
+                top: '24px',
+                left: '24px',
+                padding: '8px 16px',
+                background: 'rgba(0, 255, 0, 0.1)',
+                border: '1px solid #00FF00',
+                color: '#00FF00',
+                fontFamily: 'JetBrains Mono',
+                fontSize: '14px',
+                cursor: 'pointer',
+                zIndex: 10000,
+                backdropFilter: 'blur(4px)'
+              }}
+            >
+              ← Go Back
+            </button>
+
+            {/* Mobile Controls */}
+            <div className="md:hidden absolute bottom-8 left-0 right-0 flex justify-between px-6 z-[10000] pointer-events-none select-none">
+              <div className="flex flex-col gap-4 pointer-events-auto">
+                <button 
+                  onPointerDown={(e) => { e.preventDefault(); e.stopPropagation(); window.dispatchEvent(new KeyboardEvent('keydown', { code: 'ArrowUp', cancelable: true })); }}
+                  onPointerUp={(e) => { e.preventDefault(); e.stopPropagation(); window.dispatchEvent(new KeyboardEvent('keyup', { code: 'ArrowUp', cancelable: true })); }}
+                  onPointerLeave={(e) => { e.preventDefault(); e.stopPropagation(); window.dispatchEvent(new KeyboardEvent('keyup', { code: 'ArrowUp', cancelable: true })); }}
+                  className="w-16 h-16 rounded-full bg-[rgba(0,255,0,0.1)] border border-[#00FF00] flex items-center justify-center text-[#00FF00] text-2xl font-bold backdrop-blur-md active:bg-[rgba(0,255,0,0.3)]"
+                >
+                  ↑
+                </button>
+                <button 
+                  onPointerDown={(e) => { e.preventDefault(); e.stopPropagation(); window.dispatchEvent(new KeyboardEvent('keydown', { code: 'ArrowDown', cancelable: true })); }}
+                  onPointerUp={(e) => { e.preventDefault(); e.stopPropagation(); window.dispatchEvent(new KeyboardEvent('keyup', { code: 'ArrowDown', cancelable: true })); }}
+                  onPointerLeave={(e) => { e.preventDefault(); e.stopPropagation(); window.dispatchEvent(new KeyboardEvent('keyup', { code: 'ArrowDown', cancelable: true })); }}
+                  className="w-16 h-16 rounded-full bg-[rgba(0,255,0,0.1)] border border-[#00FF00] flex items-center justify-center text-[#00FF00] text-2xl font-bold backdrop-blur-md active:bg-[rgba(0,255,0,0.3)]"
+                >
+                  ↓
+                </button>
+              </div>
+              
+              <div className="flex items-end pointer-events-auto">
+                <button 
+                  onPointerDown={(e) => { e.preventDefault(); e.stopPropagation(); window.dispatchEvent(new KeyboardEvent('keydown', { code: 'Space', cancelable: true })); }}
+                  onPointerUp={(e) => { e.preventDefault(); e.stopPropagation(); window.dispatchEvent(new KeyboardEvent('keyup', { code: 'Space', cancelable: true })); }}
+                  onPointerLeave={(e) => { e.preventDefault(); e.stopPropagation(); window.dispatchEvent(new KeyboardEvent('keyup', { code: 'Space', cancelable: true })); }}
+                  className="w-20 h-20 rounded-full bg-[rgba(255,0,0,0.1)] border border-[#FF0000] flex items-center justify-center text-[#FF0000] font-mono font-bold text-lg backdrop-blur-md active:bg-[rgba(255,0,0,0.3)]"
+                >
+                  FIRE
+                </button>
+              </div>
+            </div>
+          </>
         )}
       </div>
     </>
