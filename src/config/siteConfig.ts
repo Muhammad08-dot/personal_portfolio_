@@ -6,7 +6,7 @@ export const siteConfig = {
   phone: "923356765854",
   location: "Faisalabad, Pakistan",
   availability: "open", // 'open' | 'limited' | 'closed'
-  availabilityText: "Available for ML Projects & Web Development",
+  availabilityText: "Available for AI/ML, Agentic AI Agents, Automations & Web Dev Projects",
   github: "https://github.com/Muhammad08-dot",
   linkedin: "https://www.linkedin.com/in/muhammad-abdullah-ramday/",
   twitter: "",
