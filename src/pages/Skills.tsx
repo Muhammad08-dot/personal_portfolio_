@@ -1,19 +1,24 @@
-import { Suspense, lazy } from 'react';
-import { motion } from 'framer-motion';
+import { Suspense, lazy, useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { fadeUp, stagger } from '../utils/animations';
 import { skills as skillsData } from '../config/siteConfig';
 
 const FloatingGeometry = lazy(() => import('../components/3d/FloatingGeometry'));
 
 const categories = [
-  { key: 'coreAI', label: 'AI & ML', color: '#ff5555' },
-  { key: 'frontend', label: 'Frontend', color: '#00ff41' },
-  { key: 'backend', label: 'Backend', color: '#bd93f9' },
-  { key: 'database', label: 'Database', color: '#f1fa8c' },
-  { key: 'toolsCloud', label: 'Tools & Cloud', color: '#ffb86c' },
+  { key: 'coreAI', label: 'AI & ML', color: '#ff5555', icon: '🧠' },
+  { key: 'frontend', label: 'Frontend', color: '#00ff41', icon: '🖥️' },
+  { key: 'backend', label: 'Backend', color: '#bd93f9', icon: '⚙️' },
+  { key: 'database', label: 'Database', color: '#f1fa8c', icon: '🗄️' },
+  { key: 'toolsCloud', label: 'Tools & Cloud', color: '#ffb86c', icon: '☁️' },
 ];
 
 export default function Skills() {
+  const [activeCategoryKey, setActiveCategoryKey] = useState<string | null>(null);
+
+  const activeCategory = categories.find(c => c.key === activeCategoryKey);
+  const activeSkillsList = activeCategory ? (skillsData as any)[activeCategory.key] || [] : [];
+
   return (
     <div style={{ background: 'var(--bg-primary)', paddingTop: '80px', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       {/* ── Header ── */}
@@ -25,70 +30,137 @@ export default function Skills() {
         </div>
         <div style={{ maxWidth: '1200px', margin: '0 auto', position: 'relative', zIndex: 10 }}>
           <motion.div initial="hidden" animate="visible" variants={stagger}>
-            <motion.p variants={fadeUp} className="section-header">// skills --stack</motion.p>
+            <motion.p variants={fadeUp} className="section-header">// skills --interactive</motion.p>
             <motion.h1 variants={fadeUp} className="section-title" style={{ fontSize: 'clamp(36px, 5vw, 56px)', marginBottom: '16px' }}>
-              Skill <span style={{ color: 'var(--accent-primary)' }}>Stack</span>
+              Skill <span style={{ color: 'var(--accent-primary)' }}>Modules</span>
             </motion.h1>
             <motion.p variants={fadeUp} style={{ color: 'var(--text-secondary)', fontSize: '18px', lineHeight: 1.7, maxWidth: '600px' }}>
-              Explore my technical ecosystem. From Agentic AI to Full-Stack Web Development.
+              Explore my technical ecosystem. Select a category below to drill down into specific technologies and tools.
             </motion.p>
           </motion.div>
         </div>
       </section>
 
-      {/* ── Responsive Grid ── */}
+      {/* ── Drill-Down Interactive System ── */}
       <section style={{ flex: 1, padding: '0 24px 60px' }}>
-        <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '40px' }}>
-            {categories.map((cat) => {
-              const skillsList = (skillsData as any)[cat.key] || [];
-              if (skillsList.length === 0) return null;
-              
-              return (
-                <motion.div key={cat.key} initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-50px" }} variants={stagger}>
-                  <motion.h2 
-                    variants={fadeUp} 
-                    style={{ 
-                      fontFamily: 'JetBrains Mono', 
-                      color: cat.color, 
-                      fontSize: '20px', 
-                      marginBottom: '20px', 
-                      borderBottom: `1px solid ${cat.color}40`, 
-                      paddingBottom: '8px',
-                      display: 'inline-block'
-                    }}
-                  >
-                    // {cat.label}
-                  </motion.h2>
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(170px, 1fr))', gap: '16px' }}>
-                    {skillsList.map((skill: any) => (
+        <div style={{ maxWidth: '1200px', margin: '0 auto', minHeight: '400px' }}>
+          <AnimatePresence mode="wait">
+            {!activeCategoryKey ? (
+              // --- CATEGORY VIEW (DEFAULT) ---
+              <motion.div
+                key="categories-view"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.3 }}
+              >
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '24px' }}>
+                  {categories.map((cat) => {
+                    const skillCount = ((skillsData as any)[cat.key] || []).length;
+                    
+                    return (
                       <motion.div 
-                        key={skill.name} 
-                        variants={fadeUp} 
+                        key={cat.key} 
                         className="glow-card" 
+                        whileHover={{ y: -5, scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        onClick={() => setActiveCategoryKey(cat.key)}
                         style={{ 
-                          padding: '24px 16px', 
+                          padding: '32px 24px', 
                           border: `1px solid ${cat.color}40`, 
-                          borderRadius: '12px', 
+                          borderRadius: '16px', 
                           background: 'var(--bg-secondary)', 
                           textAlign: 'center',
                           boxShadow: `0 4px 20px ${cat.color}10`,
+                          cursor: 'pointer',
                           display: 'flex',
                           flexDirection: 'column',
                           justifyContent: 'center',
                           alignItems: 'center'
                         }}
                       >
-                        <div style={{ fontSize: '32px', marginBottom: '16px' }}>{skill.icon}</div>
-                        <div style={{ fontFamily: 'JetBrains Mono', fontWeight: 600, fontSize: '15px', color: 'var(--text-primary)' }}>{skill.name}</div>
-                        <div style={{ marginTop: '12px', fontSize: '12px', color: 'var(--text-muted)' }}>{skill.level}% | {skill.years}y exp</div>
+                        <div style={{ fontSize: '48px', marginBottom: '16px' }}>{cat.icon}</div>
+                        <div style={{ fontFamily: 'JetBrains Mono', fontWeight: 700, fontSize: '20px', color: 'var(--text-primary)' }}>{cat.label}</div>
+                        <div style={{ marginTop: '12px', fontSize: '13px', color: cat.color, opacity: 0.9, backgroundColor: `${cat.color}15`, padding: '4px 12px', borderRadius: '12px' }}>
+                          {skillCount} {skillCount === 1 ? 'Skill' : 'Skills'}
+                        </div>
                       </motion.div>
-                    ))}
-                  </div>
-                </motion.div>
-              );
-            })}
-          </div>
+                    );
+                  })}
+                </div>
+              </motion.div>
+            ) : (
+              // --- SUB-SKILLS VIEW (ACTIVE) ---
+              <motion.div
+                key="skills-view"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.3 }}
+              >
+                {/* Header & Back Button */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '32px', flexWrap: 'wrap' }}>
+                  <button 
+                    onClick={() => setActiveCategoryKey(null)}
+                    style={{ 
+                      background: 'var(--bg-secondary)', 
+                      border: '1px solid var(--border)', 
+                      color: 'var(--text-primary)', 
+                      padding: '8px 16px', 
+                      borderRadius: '8px',
+                      cursor: 'pointer',
+                      fontFamily: 'JetBrains Mono',
+                      fontSize: '14px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                      transition: 'all 0.2s ease'
+                    }}
+                    onMouseOver={(e) => e.currentTarget.style.borderColor = activeCategory?.color || 'var(--accent-primary)'}
+                    onMouseOut={(e) => e.currentTarget.style.borderColor = 'var(--border)'}
+                  >
+                    <span>←</span> Back to Categories
+                  </button>
+                  <h2 style={{ fontFamily: 'JetBrains Mono', color: activeCategory?.color, fontSize: '24px', margin: 0 }}>
+                    {activeCategory?.icon} {activeCategory?.label}
+                  </h2>
+                </div>
+
+                {/* Sub-Skills Grid */}
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(170px, 1fr))', gap: '16px' }}>
+                  {activeSkillsList.map((skill: any, index: number) => (
+                    <motion.div 
+                      key={skill.name} 
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ duration: 0.2, delay: index * 0.05 }}
+                      className="glow-card" 
+                      style={{ 
+                        padding: '24px 16px', 
+                        border: `1px solid ${activeCategory?.color}40`, 
+                        borderRadius: '12px', 
+                        background: 'var(--bg-secondary)', 
+                        textAlign: 'center',
+                        boxShadow: `0 4px 20px ${activeCategory?.color}10`,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        justifyContent: 'center',
+                        alignItems: 'center'
+                      }}
+                    >
+                      <div style={{ fontSize: '32px', marginBottom: '16px' }}>{skill.icon}</div>
+                      <div style={{ fontFamily: 'JetBrains Mono', fontWeight: 600, fontSize: '15px', color: 'var(--text-primary)' }}>{skill.name}</div>
+                      <div style={{ marginTop: '12px', fontSize: '12px', color: 'var(--text-muted)' }}>{skill.level}% | {skill.years}y exp</div>
+                    </motion.div>
+                  ))}
+                  
+                  {activeSkillsList.length === 0 && (
+                    <div style={{ color: 'var(--text-muted)', fontFamily: 'JetBrains Mono' }}>No skills mapped yet.</div>
+                  )}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </section>
 
