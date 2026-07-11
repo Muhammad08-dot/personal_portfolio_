@@ -23,7 +23,6 @@ export default function SciFiChaseCanvas() {
     let shields = 3;
     let invulnerableTimer = 0;
     let countdown = 3;
-    let lastTime = performance.now();
     let frameCount = 0;
 
     // Input State
@@ -271,8 +270,6 @@ export default function SciFiChaseCanvas() {
     // ==========================================
     const loop = () => {
       const now = performance.now();
-      const dt = now - lastTime;
-      lastTime = now;
       frameCount++;
 
       ctx.fillStyle = '#0A0A0A';

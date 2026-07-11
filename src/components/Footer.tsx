@@ -80,7 +80,7 @@ export default function Footer() {
           className="mt-8 pt-6 text-center font-mono text-xs"
           style={{ borderTop: '1px solid var(--border)', color: 'var(--text-muted)', fontFamily: 'JetBrains Mono' }}
         >
-          <span>Built with ❤️ using React + HTML5 Canvas | © 2026 Muhammad Abdullah. All rights reserved.</span>
+          <span>Built with ❤️ using React + HTML5 Canvas | © {year} Muhammad Abdullah. All rights reserved.</span>
         </div>
       </div>
     </footer>

@@ -2,7 +2,7 @@ import { useState, Suspense, lazy } from 'react';
 import { motion } from 'framer-motion';
 import { Copy, Check, Send } from 'lucide-react';
 import { fadeUp, stagger } from '../utils/animations';
-import { socials, siteConfig } from '../config/siteConfig';
+import { siteConfig } from '../config/siteConfig';
 
 const FloatingGeometry = lazy(() => import('../components/3d/FloatingGeometry'));
 
@@ -111,10 +111,47 @@ function ContactForm() {
   const [form, setForm] = useState({ name: '', email: '', subject: '', message: '' });
   const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setStatus('sending');
-    setTimeout(() => setStatus('success'), 2000);
+
+    // Make sure to add VITE_WEB3FORMS_ACCESS_KEY to your .env.local file
+    // You can get a free access key from https://web3forms.com/
+    const accessKey = (import.meta as any).env.VITE_WEB3FORMS_ACCESS_KEY;
+    
+    if (!accessKey) {
+      alert("Missing VITE_WEB3FORMS_ACCESS_KEY in .env.local. Please get a free key from web3forms.com and add it.");
+      setStatus('error');
+      return;
+    }
+
+    try {
+      const response = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          access_key: accessKey,
+          name: form.name,
+          email: form.email,
+          subject: form.subject || "New Message from Portfolio",
+          message: form.message,
+        }),
+      });
+
+      const result = await response.json();
+      if (result.success) {
+        setStatus('success');
+      } else {
+        console.error(result);
+        setStatus('error');
+      }
+    } catch (error) {
+      console.error(error);
+      setStatus('error');
+    }
   };
 
   return (
