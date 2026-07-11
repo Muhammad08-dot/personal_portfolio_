@@ -115,9 +115,9 @@ function ContactForm() {
     e.preventDefault();
     setStatus('sending');
 
-    // Make sure to add VITE_WEB3FORMS_ACCESS_KEY to your .env.local file
-    // You can get a free access key from https://web3forms.com/
-    const accessKey = (import.meta as any).env.VITE_WEB3FORMS_ACCESS_KEY;
+    // It is 100% safe to expose Web3Forms access keys in frontend code
+    // as they only allow sending emails to your specific inbox.
+    const accessKey = import.meta.env.VITE_WEB3FORMS_ACCESS_KEY || "590b33a8-a1a9-453b-a8f2-e08be21581c5";
     
     if (!accessKey) {
       alert("Missing VITE_WEB3FORMS_ACCESS_KEY in .env.local. Please get a free key from web3forms.com and add it.");
