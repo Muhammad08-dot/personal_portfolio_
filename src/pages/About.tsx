@@ -2,8 +2,10 @@ import { Suspense, lazy } from 'react';
 import { motion } from 'framer-motion';
 import { fadeUp, stagger, slideLeft, slideRight } from '../utils/animations';
 import { siteConfig } from '../config/siteConfig';
+import { ZoomReveal, FadeReveal, SlideReveal } from '../components/ScrollRevealVariants';
 
 const FloatingGeometry = lazy(() => import('../components/3d/FloatingGeometry'));
+const NeuralBrain = lazy(() => import('../components/3d/NeuralBrain'));
 
 const timeline = [
   { year: '2024 (Early)', icon: '>', title: 'Started BS in Artificial Intelligence at NUML', desc: 'Began formal undergraduate journey in Artificial Intelligence at the National University of Modern Languages. Developed a strong foundation in core computer science, data structures, algorithms, and machine learning principles.' },
@@ -126,6 +128,7 @@ export default function About() {
       </section>
 
       {/* ── Timeline ── */}
+      <ZoomReveal>
       <section style={{ padding: '80px 24px', background: 'var(--bg-secondary)' }}>
         <div style={{ maxWidth: '900px', margin: '0 auto' }}>
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-100px' }} variants={stagger}>
@@ -168,8 +171,32 @@ export default function About() {
           </motion.div>
         </div>
       </section>
+      </ZoomReveal>
+
+      {/* ── Neural Brain 3D ── */}
+      <section style={{ padding: '0', background: 'var(--bg-primary)', position: 'relative', overflow: 'hidden', borderTop: '1px solid var(--border)' }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '60px 24px 0' }}>
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}>
+            <motion.div variants={fadeUp} style={{ textAlign: 'center', marginBottom: '0' }}>
+              <p className="section-header">// neural-network --visualize</p>
+              <h2 className="section-title">AI Connections</h2>
+              <p style={{ color: 'var(--text-muted)', fontFamily: 'JetBrains Mono', fontSize: '13px', marginTop: '8px' }}>
+                A live 3D rendering of how I think — nodes, signals, and patterns.
+              </p>
+            </motion.div>
+          </motion.div>
+        </div>
+        <Suspense fallback={
+          <div style={{ height: '400px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <span style={{ fontFamily: 'JetBrains Mono', fontSize: '12px', color: 'var(--accent-primary)' }}>Wiring neurons<span className="blink">_</span></span>
+          </div>
+        }>
+          <NeuralBrain height="400px" />
+        </Suspense>
+      </section>
 
       {/* ── Interests ── */}
+      <FadeReveal>
       <section style={{ padding: '80px 24px' }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-100px' }} variants={stagger}>
@@ -195,8 +222,10 @@ export default function About() {
           </motion.div>
         </div>
       </section>
+      </FadeReveal>
 
       {/* ── Resume Download ── */}
+      <SlideReveal direction="right">
       <section style={{ padding: '80px 24px', background: 'var(--bg-secondary)' }}>
         <div style={{ maxWidth: '700px', margin: '0 auto', textAlign: 'center' }}>
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}>
@@ -216,6 +245,7 @@ export default function About() {
           </motion.div>
         </div>
       </section>
+      </SlideReveal>
     </div>
   );
 }

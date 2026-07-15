@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { projects, techStack, siteConfig, blogPosts } from '../config/siteConfig';
 import TypingEffect from '../components/TypingEffect';
 import { fadeUp, stagger } from '../utils/animations';
+import SectionReveal from '../components/SectionReveal';
 
 const HeroScene = lazy(() => import('../components/3d/HeroScene'));
 import SciFiChaseCanvas from '../components/SciFiChaseCanvas';
@@ -172,6 +173,7 @@ export default function Home() {
       </section>
 
       {/* ── Quick Intro ── */}
+      <SectionReveal>
       <section style={{ padding: '96px 24px' }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
           <motion.div
@@ -228,6 +230,7 @@ export default function Home() {
           </motion.div>
         </div>
       </section>
+      </SectionReveal>
 
       {/* ── Sci-Fi Chase Scene Canvas ── */}
       <div style={{ width: '100%', height: '100px', padding: '0', borderTop: '1px solid var(--border)' }}>
@@ -235,6 +238,7 @@ export default function Home() {
       </div>
 
       {/* ── Tech Stack Marquee ── */}
+      <SectionReveal>
       <section style={{ padding: '48px 0', borderTop: '1px solid var(--border)', borderBottom: '1px solid var(--border)', background: 'var(--bg-secondary)', overflow: 'hidden' }}>
         <div className="marquee-container">
           <div className="marquee-track">
@@ -270,8 +274,10 @@ export default function Home() {
           </div>
         </div>
       </section>
+      </SectionReveal>
 
       {/* ── Featured Projects ── */}
+      <SectionReveal>
       <section style={{ padding: '96px 24px' }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-100px' }} variants={stagger}>
@@ -335,8 +341,10 @@ export default function Home() {
           </motion.div>
         </div>
       </section>
+      </SectionReveal>
 
       {/* ── GitHub Stats ── */}
+      <SectionReveal>
       <section style={{ padding: '96px 24px', background: 'var(--bg-secondary)' }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-100px' }} variants={stagger}>
@@ -365,6 +373,7 @@ export default function Home() {
                 <p style={{ fontFamily: 'JetBrains Mono', fontSize: '14px', color: 'var(--text-secondary)', margin: 0 }}>Contribution Activity</p>
                 <span style={{ fontSize: '16px' }}>😉</span>
               </div>
+              <div style={{ overflowX: 'hidden', maxWidth: '100%' }}>
               <div className="marquee-container" style={{ paddingBottom: '16px' }}>
                 <div className="marquee-track" style={{ display: 'flex', gap: '32px' }}>
                   {[1, 2].map((blockId) => (
@@ -392,6 +401,7 @@ export default function Home() {
                   ))}
                 </div>
               </div>
+              </div>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '8px', marginTop: '12px' }}>
                 <span style={{ fontFamily: 'JetBrains Mono', fontSize: '12px', color: 'var(--text-muted)' }}>Less</span>
                 {[0.05, 0.2, 0.45, 0.7, 1].map((o, i) => (
@@ -403,8 +413,10 @@ export default function Home() {
           </motion.div>
         </div>
       </section>
+      </SectionReveal>
 
       {/* ── Latest Blog Posts ── */}
+      <SectionReveal>
       <section style={{ padding: '96px 24px' }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-100px' }} variants={stagger}>
@@ -444,8 +456,10 @@ export default function Home() {
           </motion.div>
         </div>
       </section>
+      </SectionReveal>
 
       {/* ── CTA ── */}
+      <SectionReveal>
       <section style={{ padding: '96px 24px', background: 'var(--bg-secondary)', position: 'relative', overflow: 'hidden' }}>
         <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at center, rgba(0,255,65,0.05) 0%, transparent 70%)' }} />
         <motion.div
@@ -471,6 +485,7 @@ export default function Home() {
           </motion.div>
         </motion.div>
       </section>
+      </SectionReveal>
     </div>
   );
 }

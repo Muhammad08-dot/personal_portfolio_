@@ -2,8 +2,10 @@ import { Suspense, lazy, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { fadeUp, stagger } from '../utils/animations';
 import { skills as skillsData } from '../config/siteConfig';
+import { SlideReveal, FadeReveal } from '../components/ScrollRevealVariants';
 
 const FloatingGeometry = lazy(() => import('../components/3d/FloatingGeometry'));
+const SkillsGalaxy = lazy(() => import('../components/3d/SkillsGalaxy'));
 
 const categories = [
   { key: 'coreAI', label: 'AI & ML', color: '#ff5555', icon: '🧠' },
@@ -164,7 +166,22 @@ export default function Skills() {
         </div>
       </section>
 
+      {/* ── Skills Galaxy 3D ── */}
+      <section style={{ padding: '0', borderTop: '1px solid var(--border)', borderBottom: '1px solid var(--border)', background: 'var(--bg-primary)', position: 'relative', overflow: 'hidden' }}>
+        <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%,-50%)', textAlign: 'center', zIndex: 2, pointerEvents: 'none' }}>
+          <p style={{ fontFamily: 'JetBrains Mono', fontSize: '11px', color: 'var(--accent-primary)', opacity: 0.5, marginBottom: '4px' }}>// live — 3d skill galaxy</p>
+        </div>
+        <Suspense fallback={
+          <div style={{ height: '500px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <span style={{ fontFamily: 'JetBrains Mono', fontSize: '12px', color: 'var(--accent-primary)' }}>Rendering galaxy<span className="blink">_</span></span>
+          </div>
+        }>
+          <SkillsGalaxy height="500px" />
+        </Suspense>
+      </section>
+
       {/* ── Stats Row ── */}
+      <FadeReveal>
       <section style={{ padding: '60px 24px', background: 'var(--bg-secondary)' }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
           <motion.div
@@ -204,6 +221,7 @@ export default function Skills() {
           </motion.div>
         </div>
       </section>
+      </FadeReveal>
     </div>
   );
 }

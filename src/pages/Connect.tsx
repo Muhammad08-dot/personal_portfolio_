@@ -33,7 +33,7 @@ const customSocials = [
     followers: '200+',
     handle: 'coded_by_mabdullah',
     desc: 'Code snippets, automation builds, and tech developer lifestyle.',
-    url: 'https://instagram.com',
+    url: 'https://instagram.com/coded_by_mabdullah',
     color: '#bd93f9',
     bg: 'rgba(189,147,249,0.1)'
   },
@@ -373,7 +373,7 @@ export default function Connect() {
                     <span style={{ fontSize: '24px' }}>📍</span>
                     <div>
                       <div style={{ fontFamily: 'JetBrains Mono', fontSize: '14px', color: 'var(--text-primary)' }}>{siteConfig.location}</div>
-                      <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '2px' }}>PST (UTC-8) · Open to remote worldwide</div>
+                      <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '2px' }}>PKT (UTC+5) · Open to remote worldwide</div>
                     </div>
                   </div>
                 </div>

@@ -1,6 +1,7 @@
 import { useState, Suspense, lazy } from 'react';
 import { motion } from 'framer-motion';
 import { fadeUp, stagger } from '../utils/animations';
+import { SlideReveal, ZoomReveal, FadeReveal } from '../components/ScrollRevealVariants';
 
 const FloatingGeometry = lazy(() => import('../components/3d/FloatingGeometry'));
 
@@ -120,6 +121,7 @@ export default function Experience() {
       </section>
 
       {/* ── Work Experience (Tabbed) ── */}
+      <SlideReveal direction="left">
       <section style={{ padding: '0 24px 80px' }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
           <motion.div
@@ -225,8 +227,10 @@ export default function Experience() {
           </motion.div>
         </div>
       </section>
+      </SlideReveal>
 
       {/* ── Education ── */}
+      <ZoomReveal>
       <section style={{ padding: '80px 24px', background: 'var(--bg-secondary)' }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}>
@@ -255,8 +259,10 @@ export default function Experience() {
           </motion.div>
         </div>
       </section>
+      </ZoomReveal>
 
       {/* ── Core Learning Tracks (Repurposed from Certifications) ── */}
+      <FadeReveal>
       <section style={{ padding: '80px 24px' }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}>
@@ -278,6 +284,7 @@ export default function Experience() {
           </motion.div>
         </div>
       </section>
+      </FadeReveal>
     </div>
   );
 }

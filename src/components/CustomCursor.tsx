@@ -1,11 +1,18 @@
 import { useEffect, useRef, useState } from 'react';
 
+// Don't show custom cursor on touch/mobile devices
+function isTouchDevice() {
+  return typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches;
+}
+
 export default function CustomCursor() {
   const dotRef = useRef<HTMLDivElement>(null);
   const ringRef = useRef<HTMLDivElement>(null);
   const [hovered, setHovered] = useState(false);
+  const [isTouch] = useState(() => isTouchDevice());
 
   useEffect(() => {
+    if (isTouch) return;
     const dot = dotRef.current;
     const ring = ringRef.current;
     if (!dot || !ring) return;
@@ -22,25 +29,19 @@ export default function CustomCursor() {
     const animate = () => {
       ringX += (dotX - ringX) * 0.18;
       ringY += (dotY - ringY) * 0.18;
-
       dot.style.transform = `translate(${dotX - 4}px, ${dotY - 4}px)`;
       ring.style.transform = `translate(${ringX - (hovered ? 22 : 14)}px, ${ringY - (hovered ? 22 : 14)}px)`;
-
       animId = requestAnimationFrame(animate);
     };
 
     const onMouseOver = (e: Event) => {
       const target = e.target as HTMLElement;
-      if (target.closest('a, button, [data-cursor="hover"]')) {
-        setHovered(true);
-      }
+      if (target.closest('a, button, [data-cursor="hover"]')) setHovered(true);
     };
 
     const onMouseOut = (e: Event) => {
       const target = e.target as HTMLElement;
-      if (target.closest('a, button, [data-cursor="hover"]')) {
-        setHovered(false);
-      }
+      if (target.closest('a, button, [data-cursor="hover"]')) setHovered(false);
     };
 
     window.addEventListener('mousemove', onMouseMove);
@@ -54,7 +55,9 @@ export default function CustomCursor() {
       document.removeEventListener('mouseout', onMouseOut);
       cancelAnimationFrame(animId);
     };
-  }, [hovered]);
+  }, [hovered, isTouch]);
+
+  if (isTouch) return null;
 
   return (
     <>

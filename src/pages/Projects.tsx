@@ -1,8 +1,10 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, Suspense, lazy } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, ExternalLink, Star, GitFork, Filter } from 'lucide-react';
 import { fadeUp, stagger } from '../utils/animations';
 import { projects } from '../config/siteConfig';
+
+const DataStream = lazy(() => import('../components/3d/DataStream'));
 
 type Category = 'All' | 'Frontend' | 'Backend' | 'Full-Stack' | 'AI/ML' | 'Open Source';
 
@@ -33,8 +35,17 @@ export default function Projects() {
   return (
     <div style={{ background: 'var(--bg-primary)', paddingTop: '80px' }}>
       {/* Header */}
-      <section style={{ padding: '60px 24px', background: 'var(--bg-secondary)' }}>
-        <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+      <section style={{ padding: '0', background: 'var(--bg-secondary)', position: 'relative', overflow: 'hidden', minHeight: '260px' }}>
+        {/* 3D DataStream background */}
+        <div style={{ position: 'absolute', inset: 0, zIndex: 0 }}>
+          <Suspense fallback={null}>
+            <DataStream height="260px" />
+          </Suspense>
+        </div>
+        {/* Dark overlay so text stays readable */}
+        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, rgba(10,10,10,0.92) 40%, rgba(10,10,10,0.5) 100%)', zIndex: 1 }} />
+
+        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '60px 24px', position: 'relative', zIndex: 2 }}>
           <motion.div initial="hidden" animate="visible" variants={stagger}>
             <motion.p variants={fadeUp} className="section-header">// ls ~/projects</motion.p>
             <motion.h1 variants={fadeUp} className="section-title" style={{ fontSize: 'clamp(36px, 5vw, 56px)', marginBottom: '12px' }}>
