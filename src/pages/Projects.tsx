@@ -1,4 +1,4 @@
-import { useState, useMemo, Suspense, lazy } from 'react';
+import { useState, useMemo, useEffect, Suspense, lazy } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, ExternalLink, Star, GitFork, Filter } from 'lucide-react';
 import { fadeUp, stagger } from '../utils/animations';
@@ -20,14 +20,57 @@ export default function Projects() {
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState<Category>('All');
   const [view, setView] = useState<'grid' | 'list'>('grid');
+  const [dynamicProjects, setDynamicProjects] = useState<any[]>([]);
+
+  // Fetch GitHub repos on mount
+  useEffect(() => {
+    const fetchRepos = async () => {
+      try {
+        const response = await fetch('https://api.github.com/users/Muhammad08-dot/repos?sort=updated&per_page=20');
+        if (!response.ok) return;
+        const repos = await response.json();
+        
+        const existingUrls = projects.map(p => p.githubUrl?.toLowerCase());
+        
+        const newProjects = repos
+          .filter((repo: any) => repo.html_url && !existingUrls.includes(repo.html_url.toLowerCase()) && repo.name !== "Muhammad08-dot")
+          .map((repo: any) => ({
+            id: repo.name,
+            title: repo.name.split(/[-_]/).map((w: string) => w.charAt(0).toUpperCase() + w.slice(1)).join(' '),
+            slug: repo.name,
+            description: repo.description || "Open source project from GitHub.",
+            longDescription: repo.description || "Open source project from GitHub.",
+            thumbnail: null,
+            tech: repo.topics?.length ? repo.topics : (repo.language ? [repo.language] : ['Code']),
+            status: "active",
+            featured: false,
+            githubUrl: repo.html_url,
+            live: repo.homepage || null,
+            category: "Open Source",
+            stars: repo.stargazers_count,
+            forks: repo.forks_count,
+            year: new Date(repo.created_at).getFullYear(),
+            color: "#f1fa8c", // Distinct color for auto-fetched
+          }));
+
+        setDynamicProjects(newProjects);
+      } catch (error) {
+        console.error("Failed to fetch GitHub repos:", error);
+      }
+    };
+    
+    fetchRepos();
+  }, []);
+
+  const allProjects = useMemo(() => [...projects, ...dynamicProjects], [dynamicProjects]);
 
   const filtered = useMemo(() => {
-    return projects.filter(p => {
-      const matchSearch = !search || p.title.toLowerCase().includes(search.toLowerCase()) || p.description.toLowerCase().includes(search.toLowerCase()) || p.tech.some(t => t.toLowerCase().includes(search.toLowerCase()));
+    return allProjects.filter(p => {
+      const matchSearch = !search || p.title.toLowerCase().includes(search.toLowerCase()) || p.description.toLowerCase().includes(search.toLowerCase()) || p.tech.some((t: string) => t.toLowerCase().includes(search.toLowerCase()));
       const matchCategory = category === 'All' || p.category === category;
       return matchSearch && matchCategory;
     });
-  }, [search, category]);
+  }, [search, category, allProjects]);
 
   const featured = filtered.filter(p => p.featured);
   const rest = filtered.filter(p => !p.featured);
