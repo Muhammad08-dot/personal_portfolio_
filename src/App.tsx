@@ -21,6 +21,8 @@ const Article = lazy(() => import('./pages/Article'));
 const BlogPost = lazy(() => import('./pages/BlogPost'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 
+import { Command } from 'lucide-react';
+
 const PageLoader = () => (
   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '50vh', background: 'var(--bg-primary)' }}>
     <div style={{ fontFamily: 'JetBrains Mono', fontSize: '13px', color: 'var(--accent-primary)' }}>
@@ -91,16 +93,39 @@ function AppContent() {
     <>
       <CommandPalette open={cmdOpen} onClose={() => setCmdOpen(false)} />
       <Navbar />
-      {/* CMD K hint */}
-      <div
-        className="fixed bottom-4 left-4 md:bottom-8 md:left-8 z-50 flex items-center gap-[6px] px-3 py-1.5 rounded-md border border-[var(--border)] cursor-pointer"
-        style={{ background: 'rgba(17,17,17,0.8)', backdropFilter: 'blur(8px)' }}
+      {/* CMD K hint / Mobile Commands FAB */}
+      <motion.div
+        className="fixed left-0 top-1/2 -translate-y-1/2 md:bottom-8 md:left-8 md:top-auto md:translate-y-0 z-50 flex items-center gap-2 px-3 py-2.5 md:px-3.5 md:py-2 rounded-r-lg md:rounded-lg border-y border-r border-l-0 md:border cursor-pointer select-none"
+        style={{
+          background: 'rgba(17, 17, 17, 0.85)',
+          backdropFilter: 'blur(12px)',
+          borderColor: 'var(--border)',
+          color: 'var(--text-primary)',
+          boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3)',
+        }}
+        whileHover={{
+          scale: 1.05,
+          borderColor: 'var(--accent-primary)',
+          boxShadow: '0 0 15px var(--glow), 0 4px 20px rgba(0, 0, 0, 0.3)',
+        }}
+        whileTap={{ scale: 0.95 }}
         onClick={() => setCmdOpen(true)}
       >
-        <kbd style={{ fontFamily: 'JetBrains Mono', fontSize: '11px', color: 'var(--text-muted)' }}>⌘K</kbd>
-        <span className="hidden md:inline" style={{ fontFamily: 'JetBrains Mono', fontSize: '11px', color: 'var(--text-muted)' }}>Command Palette</span>
-        <span className="md:hidden" style={{ fontFamily: 'JetBrains Mono', fontSize: '11px', color: 'var(--text-muted)' }}>Cmd</span>
-      </div>
+        <Command size={14} className="text-[var(--accent-primary)] animate-pulse" />
+        
+        {/* Desktop View */}
+        <span className="hidden md:inline font-mono text-xs font-medium tracking-wide">
+          Command Palette
+        </span>
+        <kbd className="hidden md:inline-flex items-center justify-center px-1.5 py-0.5 rounded text-[10px] font-mono border border-[var(--border)] bg-[var(--bg-primary)] text-[var(--text-muted)] ml-1">
+          ⌘K
+        </kbd>
+
+        {/* Mobile View */}
+        <span className="md:hidden font-mono text-[11px] font-semibold tracking-wider text-[var(--accent-primary)]">
+          COMMANDS
+        </span>
+      </motion.div>
       <main style={{ minHeight: '100vh' }}>
         <AnimatedRoutes />
       </main>
